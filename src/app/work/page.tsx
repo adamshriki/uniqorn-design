@@ -106,7 +106,7 @@ export default function WorkPage() {
                   transition={{ duration: 0.35 }}
                 >
                   <Link
-                    href={`/uniqorn-design/work/${project.slug}`}
+                    href={`/work/${project.slug}`}
                     className={`group block rounded-2xl bg-bg-card border border-border-light overflow-hidden hover:shadow-2xl ${categoryAccent[project.category]} transition-all duration-500 hover:border-primary/30 hover:-translate-y-1`}
                   >
                     {/* Thumbnail */}

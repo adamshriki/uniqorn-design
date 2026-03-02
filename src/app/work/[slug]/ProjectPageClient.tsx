@@ -24,7 +24,7 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
         <Navigation />
         <div className="pt-40 pb-32 px-6 text-center">
           <h1 className="text-4xl font-bold text-text">Project not found</h1>
-          <Link href="/uniqorn-design/work" className="text-primary-light mt-4 inline-block hover:underline">
+          <Link href="/work" className="text-primary-light mt-4 inline-block hover:underline">
             ← Back to Work
           </Link>
         </div>
@@ -50,7 +50,7 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
         <div className="max-w-4xl mx-auto relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Link
-              href="/uniqorn-design/work"
+              href="/work"
               className="text-text-secondary hover:text-primary-light transition-colors text-sm inline-flex items-center gap-2 mb-8"
             >
               ← Back to Work
