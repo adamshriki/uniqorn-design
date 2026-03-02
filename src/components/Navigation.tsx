@@ -6,10 +6,10 @@ import { Menu, X } from "lucide-react";
 import { img } from "@/lib/utils";
 
 const links = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "#about" },
-  { label: "Articles", href: "#articles" },
-  { label: "Contact", href: "#contact" },
+  { label: "Work", href: "/uniqorn-design/work" },
+  { label: "About", href: "/uniqorn-design/about" },
+  { label: "Articles", href: "/uniqorn-design/articles" },
+  { label: "Contact", href: "/uniqorn-design/contact" },
 ];
 
 export default function Navigation() {
@@ -29,12 +29,12 @@ export default function Navigation() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-bg/80 backdrop-blur-xl border-b border-border-light"
+          ? "bg-bg/80 backdrop-blur-xl"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#">
+        <a href="/uniqorn-design/">
           <img src={img("/logo.svg")} alt="Uniqorn Design" className="h-8" />
         </a>
 
@@ -50,7 +50,7 @@ export default function Navigation() {
             </a>
           ))}
           <a
-            href="#contact"
+            href="/uniqorn-design/contact"
             className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-secondary text-white text-sm font-medium hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-105"
           >
             Let&apos;s Talk
@@ -73,7 +73,7 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-bg-surface/95 backdrop-blur-xl border-b border-border-light"
+            className="md:hidden bg-bg-surface/95 backdrop-blur-xl"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
               {links.map((l) => (
@@ -87,7 +87,7 @@ export default function Navigation() {
                 </a>
               ))}
               <a
-                href="#contact"
+                href="/uniqorn-design/contact"
                 onClick={() => setMobileOpen(false)}
                 className="px-5 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white text-center font-medium"
               >

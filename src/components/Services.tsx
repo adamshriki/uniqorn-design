@@ -38,7 +38,8 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group p-8 rounded-2xl bg-bg-surface/50 border border-border-light hover:border-primary/30 hover:-translate-y-1 transition-all duration-300"
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="group p-8 rounded-2xl bg-bg-surface/50 border border-border-light hover:border-primary/30 transition-colors duration-300"
             >
               <s.icon
                 size={32}

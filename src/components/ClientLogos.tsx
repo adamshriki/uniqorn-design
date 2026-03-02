@@ -12,7 +12,7 @@ export default function ClientLogos() {
   const doubled = [...logos, ...logos];
 
   return (
-    <section className="py-16 overflow-hidden border-y border-border-light">
+    <section className="py-16 overflow-hidden">
       <p className="text-center text-text-muted text-sm uppercase tracking-widest mb-10">
         Trusted by innovative teams
       </p>
@@ -26,7 +26,7 @@ export default function ClientLogos() {
               key={`${name}-${i}`}
               src={img(`/logos/${name}.svg`)}
               alt={name}
-              className="h-8 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+              className="h-8 opacity-40 hover:opacity-80 transition-all duration-300 [filter:brightness(0)_invert(1)]"
             />
           ))}
         </div>
