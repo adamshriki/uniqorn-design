@@ -136,19 +136,31 @@ function SaaSIllustration() {
             transition={{ duration: 2, repeat: Infinity }}
           />
         ))}
-        {/* Chart bars */}
-        {[0, 1, 2, 3, 4, 5, 6].map(i => (
-          <motion.rect
-            key={`bar-${i}`}
-            x={130 + i * 30} y={200}
-            width={18} rx={4}
-            fill={`url(#saas-bar-${i % 2})`}
-            initial={{ height: 0 }}
-            animate={{ height: [0, 40 + Math.sin(i * 1.5) * 50 + 30, 40 + Math.sin(i * 1.5 + 1) * 50 + 30] }}
-            transition={{ duration: 2, delay: i * 0.15, repeat: Infinity, repeatType: "reverse" }}
-            style={{ originY: 1, transformBox: "fill-box" }}
-          />
-        ))}
+        {/* Clip content to dashboard bounds */}
+        <clipPath id="dashboard-clip">
+          <rect x={40} y={62} width={320} height={208} />
+        </clipPath>
+        <g clipPath="url(#dashboard-clip)">
+        {/* Chart bars — grow upward from baseline */}
+        {[0, 1, 2, 3, 4, 5, 6].map(i => {
+          const barHeight = 40 + Math.sin(i * 1.5) * 40 + 30;
+          const baseline = 250;
+          return (
+            <motion.rect
+              key={`bar-${i}`}
+              x={130 + i * 30}
+              width={18} rx={4}
+              fill={`url(#saas-bar-${i % 2})`}
+              initial={{ y: baseline, height: 0 }}
+              animate={{
+                y: [baseline, baseline - barHeight, baseline - barHeight * 0.8],
+                height: [0, barHeight, barHeight * 0.8],
+              }}
+              transition={{ duration: 2, delay: i * 0.15, repeat: Infinity, repeatType: "reverse" }}
+            />
+          );
+        })}
+        </g>
         {/* Stat cards */}
         {[0, 1, 2].map(i => (
           <g key={`stat-${i}`}>
