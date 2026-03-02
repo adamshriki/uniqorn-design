@@ -2,40 +2,24 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-
-const projects = [
-  { name: "Pendo", tags: ["Product Design", "SaaS"], category: "SaaS" },
-  { name: "Lunar", tags: ["Product Design", "Motion Design", "Illustrations", "SaaS"], category: "SaaS" },
-  { name: "Hysolate", tags: ["UX Research", "Illustrations", "Product Design", "Motion Design"], category: "Cybersecurity" },
-  { name: "Careology", tags: ["UX Research", "Illustrations", "Product Design"], category: "Healthtech" },
-  { name: "Ummanu", tags: ["Product Design", "WordPress", "Marketing", "Branding", "Illustrations"], category: "Healthtech" },
-  { name: "LQFI", tags: ["Product Design", "UX Research", "Marketing", "Motion Design", "Illustrations"], category: "Fintech" },
-  { name: "Carbyne", tags: ["Product Design"], category: "Cybersecurity" },
-  { name: "Grin", tags: ["Motion Design", "Product Design", "Illustrations", "UX Research", "Marketing"], category: "SaaS" },
-  { name: "Aerospheres", tags: ["Illustrations", "Marketing", "Branding"], category: "Cybersecurity" },
-  { name: "Optitex", tags: ["Product Design", "Frontend"], category: "SaaS" },
-  { name: "Perception Point", tags: ["Product Design", "UX Research"], category: "Cybersecurity" },
-  { name: "Atera", tags: ["WordPress", "Marketing", "Illustrations", "Branding"], category: "SaaS" },
-  { name: "Real", tags: ["Marketing", "Illustrations", "Product Design"], category: "Fintech" },
-  { name: "Pipelbiz", tags: ["Product Design"], category: "SaaS" },
-  { name: "Aetrex", tags: ["Product Design"], category: "Healthtech" },
-  { name: "Mend", tags: ["Product Design"], category: "Fintech" },
-];
-
-const categoryGradients: Record<string, string> = {
-  SaaS: "from-purple-600/40 via-purple-500/20 to-violet-700/30",
-  Cybersecurity: "from-cyan-600/40 via-cyan-500/20 to-teal-700/30",
-  Healthtech: "from-emerald-600/40 via-emerald-500/20 to-green-700/30",
-  Fintech: "from-amber-600/40 via-amber-500/20 to-yellow-700/30",
-};
+import { projects } from "@/data/projects";
+import { img } from "@/lib/utils";
 
 const categoryAccent: Record<string, string> = {
   SaaS: "shadow-purple-500/20",
   Cybersecurity: "shadow-cyan-500/20",
   Healthtech: "shadow-emerald-500/20",
   Fintech: "shadow-amber-500/20",
+};
+
+const categoryGradients: Record<string, string> = {
+  SaaS: "from-purple-600/40 via-purple-500/20 to-violet-700/30",
+  Cybersecurity: "from-cyan-600/40 via-cyan-500/20 to-teal-700/30",
+  Healthtech: "from-emerald-600/40 via-emerald-500/20 to-green-700/30",
+  Fintech: "from-amber-600/40 via-amber-500/20 to-yellow-700/30",
 };
 
 export default function WorkPage() {
@@ -114,41 +98,44 @@ export default function WorkPage() {
             <AnimatePresence mode="popLayout">
               {filtered.map((project) => (
                 <motion.div
-                  key={project.name}
+                  key={project.slug}
                   layout
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.35 }}
-                  className={`group rounded-2xl bg-bg-card border border-border-light overflow-hidden hover:shadow-2xl ${categoryAccent[project.category]} transition-all duration-500 hover:border-primary/30 hover:-translate-y-1`}
                 >
-                  {/* Thumbnail */}
-                  <div className={`aspect-[16/10] bg-gradient-to-br ${categoryGradients[project.category]} relative overflow-hidden`}>
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.08),transparent)]" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-4xl font-bold font-[family-name:var(--font-display)] text-white/20 group-hover:text-white/30 transition-colors duration-500">
-                        {project.name}
-                      </span>
+                  <Link
+                    href={`/uniqorn-design/work/${project.slug}`}
+                    className={`group block rounded-2xl bg-bg-card border border-border-light overflow-hidden hover:shadow-2xl ${categoryAccent[project.category]} transition-all duration-500 hover:border-primary/30 hover:-translate-y-1`}
+                  >
+                    {/* Thumbnail */}
+                    <div className={`aspect-[16/10] relative overflow-hidden bg-gradient-to-br ${categoryGradients[project.category]}`}>
+                      <img
+                        src={img(project.thumbnail)}
+                        alt={project.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
                     </div>
-                  </div>
 
-                  {/* Info */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text mb-1">
-                      {project.name}
-                    </h3>
-                    <p className="text-text-muted text-sm mb-4">{project.category}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-3 py-1 text-xs rounded-full bg-bg-glass border border-border text-text-secondary"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    {/* Info */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text mb-1">
+                        {project.name}
+                      </h3>
+                      <p className="text-text-muted text-sm mb-4">{project.subtitle}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-3 py-1 text-xs rounded-full bg-bg-glass border border-border text-text-secondary"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </motion.div>
               ))}
             </AnimatePresence>
