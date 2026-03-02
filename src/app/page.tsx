@@ -10,30 +10,38 @@ import Stats from "@/components/Stats";
 import ArticlesPreview from "@/components/ArticlesPreview";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 export default function Home() {
   return (
     <main>
+      <AnimatedBackground />
       <Navigation />
       <HeroSection />
       <ClientLogos />
-      <Specializations />
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg-surface/50 to-transparent pointer-events-none" />
+
+      <div className="section-purple relative">
+        <Specializations />
+      </div>
+
+      <div className="section-deep relative">
         <Services />
       </div>
+
       <FeaturedWork />
-      <div className="relative">
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.05), transparent 60%), radial-gradient(ellipse at 80% 50%, rgba(6,182,212,0.04), transparent 60%)"
-        }} />
+
+      <div className="section-cyan relative">
         <Process />
       </div>
-      <Testimonials />
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent pointer-events-none" />
+
+      <div className="section-warm relative">
+        <Testimonials />
+      </div>
+
+      <div className="section-mixed relative">
         <Stats />
       </div>
+
       <ArticlesPreview />
       <CTASection />
       <Footer />
