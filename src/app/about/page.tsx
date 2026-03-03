@@ -102,34 +102,57 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team */}
+      {/* Founder */}
       <section className="px-6 pb-24">
-        <div className="max-w-7xl mx-auto text-center">
+        <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-display)] mb-16 bg-gradient-to-r from-text to-primary-light bg-clip-text text-transparent"
+            className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-display)] mb-16 text-center bg-gradient-to-r from-text to-primary-light bg-clip-text text-transparent"
           >
-            Meet the Team
+            Meet the Founder
           </motion.h2>
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="inline-block"
+            className="flex flex-col md:flex-row items-center gap-10 md:gap-16 max-w-4xl mx-auto"
           >
-            <div className="p-8 rounded-2xl bg-bg-card border border-border-light max-w-sm mx-auto">
-              <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/30">
+            {/* Photo */}
+            <div className="flex-shrink-0">
+              <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl shadow-primary/10">
                 <img
-                  src={img("/images/testimonial-ayman.png")}
+                  src={img("/images/adam-shriki.webp")}
                   alt="Adam Shriki"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text">Adam Shriki</h3>
-              <p className="text-primary-light text-sm mt-1">Founder & Lead Designer</p>
+            </div>
+
+            {/* Info */}
+            <div>
+              <h3 className="text-2xl md:text-3xl font-bold font-[family-name:var(--font-display)] text-text mb-1">
+                Adam Shriki
+              </h3>
+              <p className="text-primary-light font-medium mb-5">
+                Founder & Lead Product Designer
+              </p>
+              <p className="text-text-secondary text-base md:text-lg leading-relaxed mb-6">
+                Product designer with 10+ years of experience building users human-loved, enterprise-grade digital products. Principal Product Designer at Boomi, leading the Data Integration product in Israel and the design of Knowledge Hub, an AI-powered RAG knowledge base. Founder and lead designer at Uniqorn Design, partnering with startups across Cybersecurity, SaaS, Fintech, and Healthtech to deliver impactful, user-centered solutions.
+              </p>
+              <a
+                href="https://adamshriki.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-primary-light hover:text-primary font-medium transition-colors group"
+              >
+                adamshriki.com
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                  <path d="M5 3h8v8M13 3L3 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
             </div>
           </motion.div>
         </div>
