@@ -1,16 +1,233 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Eye, Trophy, Puzzle } from "lucide-react";
 import { img } from "@/lib/utils";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
+/* ---------- Animated SVG icons for "Our Approach" ---------- */
+
+function UserCenteredIcon() {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
+      {/* Person silhouette */}
+      <motion.circle
+        cx="32" cy="20" r="8"
+        stroke="#A78BFA" strokeWidth="2" fill="none"
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        transition={{ duration: 0.5, type: "spring" }}
+      />
+      <motion.path
+        d="M18 48c0-8 6-14 14-14s14 6 14 14"
+        stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" fill="none"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+      />
+      {/* Orbiting target rings */}
+      <motion.circle
+        cx="32" cy="32" r="24"
+        stroke="#7C3AED" strokeWidth="1" strokeDasharray="4 4" fill="none" opacity={0.4}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.circle
+        cx="32" cy="32" r="30"
+        stroke="#06B6D4" strokeWidth="1" strokeDasharray="6 6" fill="none" opacity={0.25}
+        animate={{ rotate: -360 }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      />
+      {/* Pulsing heart */}
+      <motion.path
+        d="M32 38l-3-3c-2-2-3-3.5-3-5a3 3 0 015.5-1.5L32 29l.5-.5A3 3 0 0138 30c0 1.5-1 3-3 5l-3 3z"
+        fill="#F472B6"
+        animate={{ scale: [1, 1.2, 1] }}
+        transition={{ duration: 1.5, repeat: Infinity }}
+      />
+    </svg>
+  );
+}
+
+function TransparentProcessIcon() {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
+      {/* Glass panel */}
+      <motion.rect
+        x="12" y="12" width="40" height="40" rx="6"
+        stroke="#A78BFA" strokeWidth="2" fill="none"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+      />
+      {/* Grid lines inside (transparent = visible) */}
+      {[24, 32, 40].map((y) => (
+        <motion.line
+          key={`h${y}`}
+          x1="16" y1={y} x2="48" y2={y}
+          stroke="#7C3AED" strokeWidth="0.8" opacity={0.3}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          transition={{ duration: 0.5, delay: (y - 24) * 0.1 }}
+        />
+      ))}
+      {[24, 32, 40].map((x) => (
+        <motion.line
+          key={`v${x}`}
+          x1={x} y1="16" x2={x} y2="48"
+          stroke="#7C3AED" strokeWidth="0.8" opacity={0.3}
+          initial={{ scaleY: 0 }}
+          whileInView={{ scaleY: 1 }}
+          transition={{ duration: 0.5, delay: (x - 24) * 0.1 }}
+        />
+      ))}
+      {/* Eye in center */}
+      <motion.ellipse
+        cx="32" cy="32" rx="10" ry="6"
+        stroke="#06B6D4" strokeWidth="2" fill="none"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      />
+      <motion.circle
+        cx="32" cy="32" r="3"
+        fill="#06B6D4"
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        transition={{ duration: 0.3, delay: 0.7 }}
+      />
+      {/* Scanning line */}
+      <motion.line
+        x1="12" y1="32" x2="52" y2="32"
+        stroke="#06B6D4" strokeWidth="1.5" opacity={0.5}
+        animate={{ y1: [16, 48, 16], y2: [16, 48, 16] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </svg>
+  );
+}
+
+function TrackRecordIcon() {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
+      {/* Trophy cup */}
+      <motion.path
+        d="M22 16h20v6c0 8-4 14-10 16-6-2-10-8-10-16v-6z"
+        stroke="#F59E0B" strokeWidth="2" fill="none"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        transition={{ duration: 0.8 }}
+      />
+      {/* Trophy handles */}
+      <motion.path
+        d="M22 20c-4 0-7 3-7 6s3 6 7 6"
+        stroke="#F59E0B" strokeWidth="1.5" fill="none"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      />
+      <motion.path
+        d="M42 20c4 0 7 3 7 6s-3 6-7 6"
+        stroke="#F59E0B" strokeWidth="1.5" fill="none"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      />
+      {/* Base */}
+      <motion.path
+        d="M28 38v4h8v-4M26 42h12v3H26z"
+        stroke="#F59E0B" strokeWidth="1.5" fill="none"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+      />
+      {/* Star */}
+      <motion.path
+        d="M32 22l2 4 4.5.5-3.2 3.2.7 4.5L32 32l-4 2.2.7-4.5-3.2-3.2L30 26z"
+        fill="#F59E0B"
+        initial={{ scale: 0, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.6, type: "spring" }}
+      />
+      {/* Sparkles */}
+      {[
+        { cx: 14, cy: 12, d: 0 },
+        { cx: 50, cy: 12, d: 0.2 },
+        { cx: 10, cy: 34, d: 0.4 },
+        { cx: 54, cy: 34, d: 0.6 },
+      ].map((s, i) => (
+        <motion.circle
+          key={i}
+          cx={s.cx} cy={s.cy} r="1.5"
+          fill="#FBBF24"
+          animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, delay: s.d }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+function SeamlessIntegrationIcon() {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
+      {/* Two puzzle pieces interlocking */}
+      <motion.path
+        d="M14 24h10v-4a4 4 0 018 0v4h10v10h-4a4 4 0 000 8h4v10H14V24z"
+        stroke="#A78BFA" strokeWidth="2" fill="none"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        transition={{ duration: 1.2 }}
+      />
+      {/* Connection dots on edges */}
+      {[
+        { cx: 28, cy: 20 },
+        { cx: 38, cy: 38 },
+      ].map((d, i) => (
+        <motion.circle
+          key={i}
+          cx={d.cx} cy={d.cy} r="3"
+          fill="#7C3AED"
+          animate={{ scale: [1, 1.3, 1] }}
+          transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+        />
+      ))}
+      {/* Rotating gear */}
+      <motion.g
+        animate={{ rotate: 360 }}
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        style={{ transformOrigin: "46px 46px" }}
+      >
+        <circle cx="46" cy="46" r="5" stroke="#06B6D4" strokeWidth="1.5" fill="none" />
+        {[0, 60, 120, 180, 240, 300].map((angle) => {
+          const rad = (angle * Math.PI) / 180;
+          const x = 46 + Math.cos(rad) * 7;
+          const y = 46 + Math.sin(rad) * 7;
+          return (
+            <rect
+              key={angle}
+              x={x - 1.5} y={y - 1.5} width="3" height="3" rx="0.5"
+              fill="#06B6D4"
+            />
+          );
+        })}
+      </motion.g>
+      {/* Data flow lines */}
+      <motion.path
+        d="M20 50c6-4 10-2 16-6s8-2 14-6"
+        stroke="#06B6D4" strokeWidth="1" strokeDasharray="3 3" fill="none" opacity={0.4}
+        animate={{ strokeDashoffset: [0, -24] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      />
+    </svg>
+  );
+}
+
 const values = [
-  { icon: Users, title: "User-Centered Design", desc: "Every pixel serves the user. We research, test, and iterate until the experience feels effortless." },
-  { icon: Eye, title: "Transparent Process", desc: "No black boxes. Our clients are partners in every stage—from discovery through final delivery." },
-  { icon: Trophy, title: "Proven Track Record", desc: "Dozens of successful digital products over the past decade, used by hundreds of thousands of people." },
-  { icon: Puzzle, title: "Seamless Integration", desc: "We embed within your product and dev teams, aligning design with real goals and technical constraints." },
+  { icon: UserCenteredIcon, title: "User-Centered Design", desc: "Every pixel serves the user. We research, test, and iterate until the experience feels effortless." },
+  { icon: TransparentProcessIcon, title: "Transparent Process", desc: "No black boxes. Our clients are partners in every stage—from discovery through final delivery." },
+  { icon: TrackRecordIcon, title: "Proven Track Record", desc: "Dozens of successful digital products over the past decade, used by hundreds of thousands of people." },
+  { icon: SeamlessIntegrationIcon, title: "Seamless Integration", desc: "We embed within your product and dev teams, aligning design with real goals and technical constraints." },
 ];
 
 const fadeUp = {
@@ -91,8 +308,8 @@ export default function AboutPage() {
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="p-8 rounded-2xl bg-bg-card border border-border-light hover:border-primary/30 transition-all duration-500 group hover:-translate-y-1"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                  <v.icon className="w-6 h-6 text-primary-light" />
+                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors p-2">
+                  <v.icon />
                 </div>
                 <h3 className="text-lg font-bold font-[family-name:var(--font-display)] text-text mb-3">{v.title}</h3>
                 <p className="text-text-secondary text-sm leading-relaxed">{v.desc}</p>
