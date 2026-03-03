@@ -72,7 +72,7 @@ export const articles: Article[] = [
     author: "Adam Shriki",
     category: "UX Research",
     thumbnail: "/images/articles/thumb-ui-components.svg",
-    heroImage: "/images/articles/ui-components/hero.png",
+    heroImage: "/images/articles/ui-components/hero.webp",
   },
   {
     slug: "the-high-cost-of-interruption",
