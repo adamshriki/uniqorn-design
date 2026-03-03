@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 const stats = [
-  { value: 10, suffix: "+", label: "Years of experience" },
-  { value: 50, suffix: "+", label: "Digital products designed" },
-  { value: 100, suffix: "K+", label: "Users impacted" },
+  { value: 15, suffix: "+", label: "Years of experience" },
+  { value: 100, suffix: "+", label: "Digital products designed" },
+  { value: 10, suffix: "M+", label: "Users impacted" },
 ];
 
 function Counter({ target, suffix }: { target: number; suffix: string }) {
