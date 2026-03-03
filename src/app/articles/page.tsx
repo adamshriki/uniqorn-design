@@ -1,35 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, ExternalLink } from "lucide-react";
+import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-
-const articles = [
-  {
-    title: "The Ultimate Guide to SaaS Product Design",
-    excerpt: "By focusing on creating an intuitive and user-friendly interface, SaaS companies can enhance the overall user experience and drive customer satisfaction.",
-    link: "https://uniqorn.design/article/the-ultimate-guide-to-saas-product-design/",
-    readTime: "6 min read",
-    gradient: "from-purple-600/40 via-violet-500/20 to-indigo-700/30",
-  },
-  {
-    title: "The High Cost of Interruption: Re-evaluating the Modal Dialog in Modern UX",
-    excerpt: "The Dialog has morphed from a specific utility pattern into a catch-all container for almost every UI problem.",
-    link: "https://medium.com/@adamshriki/the-high-cost-of-interruption-re-evaluating-the-modal-dialog-in-modern-ux-e448fb7559ff",
-    readTime: "8 min read",
-    gradient: "from-cyan-600/40 via-teal-500/20 to-blue-700/30",
-  },
-  {
-    title: "The different types of 'Saving' options — and how to choose the right one",
-    excerpt: "Reviewing the different options for saving information in complex systems and how to choose the best choice for the user.",
-    link: "https://uniqorn.design/article/the-different-types-of-saving-options-and-how-to-choose-the-right-one/",
-    readTime: "5 min read",
-    gradient: "from-amber-600/40 via-orange-500/20 to-yellow-700/30",
-  },
-];
+import { articles } from "@/data/articles";
+import { img } from "@/lib/utils";
 
 export default function ArticlesPage() {
+  const featured = articles[0];
+  const rest = articles.slice(1);
+
   return (
     <main>
       <Navigation />
@@ -69,72 +51,120 @@ export default function ArticlesPage() {
       {/* Featured Article */}
       <section className="px-6 pb-12">
         <div className="max-w-7xl mx-auto">
-          <motion.a
-            href={articles[0].link}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="block group rounded-3xl bg-bg-card border border-border-light overflow-hidden hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
-          >
-            <div className={`aspect-[21/9] bg-gradient-to-br ${articles[0].gradient} relative overflow-hidden`}>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.08),transparent)]" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-6xl font-bold font-[family-name:var(--font-display)] text-white/10 group-hover:text-white/20 transition-colors duration-500">
-                  Featured
+          <Link href={`/articles/${featured.slug}`}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="block group rounded-3xl bg-bg-card border border-border-light overflow-hidden hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
+            >
+              <div className="aspect-[21/9] relative overflow-hidden">
+                <img
+                  src={img(featured.thumbnail)}
+                  alt={featured.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8 md:p-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/20 text-primary-light">
+                    {featured.category}
+                  </span>
+                  <Clock className="w-4 h-4 text-text-muted" />
+                  <span className="text-text-muted text-sm">
+                    {featured.readTime}
+                  </span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold font-[family-name:var(--font-display)] text-text mb-4 group-hover:text-primary-light transition-colors">
+                  {featured.title}
+                </h2>
+                <p className="text-text-secondary text-lg mb-6 max-w-3xl">
+                  {featured.excerpt}
+                </p>
+                <span className="inline-flex items-center gap-2 text-primary-light font-medium group-hover:gap-3 transition-all">
+                  Read article <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
-            </div>
-            <div className="p-8 md:p-12">
-              <div className="flex items-center gap-3 mb-4">
-                <Clock className="w-4 h-4 text-text-muted" />
-                <span className="text-text-muted text-sm">{articles[0].readTime}</span>
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold font-[family-name:var(--font-display)] text-text mb-4 group-hover:text-primary-light transition-colors">
-                {articles[0].title}
-              </h2>
-              <p className="text-text-secondary text-lg mb-6 max-w-3xl">{articles[0].excerpt}</p>
-              <span className="inline-flex items-center gap-2 text-primary-light font-medium group-hover:gap-3 transition-all">
-                Read article <ArrowRight className="w-4 h-4" />
-              </span>
-            </div>
-          </motion.a>
+            </motion.div>
+          </Link>
         </div>
       </section>
 
       {/* Other Articles */}
       <section className="px-6 pb-32">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-          {articles.slice(1).map((article, i) => (
-            <motion.a
-              key={article.title}
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
-              className="group rounded-2xl bg-bg-card border border-border-light overflow-hidden hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1"
-            >
-              <div className={`aspect-[16/9] bg-gradient-to-br ${article.gradient} relative overflow-hidden`}>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.08),transparent)]" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <Clock className="w-4 h-4 text-text-muted" />
-                  <span className="text-text-muted text-sm">{article.readTime}</span>
-                </div>
-                <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text mb-3 group-hover:text-primary-light transition-colors">
-                  {article.title}
-                </h3>
-                <p className="text-text-secondary text-sm mb-4 leading-relaxed">{article.excerpt}</p>
-                <span className="inline-flex items-center gap-2 text-primary-light text-sm font-medium group-hover:gap-3 transition-all">
-                  Read article <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            </motion.a>
-          ))}
+          {rest.map((article, i) => {
+            const isExternal = !!article.external;
+            const CardWrapper = isExternal ? "a" : Link;
+            const linkProps = isExternal
+              ? {
+                  href: article.external!,
+                  target: "_blank" as const,
+                  rel: "noopener noreferrer",
+                }
+              : { href: `/articles/${article.slug}` };
+
+            return (
+              <motion.div
+                key={article.slug}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
+              >
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <CardWrapper
+                  {...(linkProps as any)}
+                  className={`group block rounded-2xl bg-bg-card border overflow-hidden hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 ${
+                    isExternal
+                      ? "border-pink-500/20 hover:border-pink-500/40"
+                      : "border-border-light"
+                  }`}
+                >
+                  <div className="aspect-[16/9] relative overflow-hidden">
+                    <img
+                      src={img(article.thumbnail)}
+                      alt={article.title}
+                      className="w-full h-full object-cover"
+                    />
+                    {isExternal && (
+                      <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-sm text-xs text-pink-400 flex items-center gap-1.5">
+                        <ExternalLink className="w-3 h-3" /> Medium
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-primary/15 text-primary-light">
+                        {article.category}
+                      </span>
+                      <Clock className="w-4 h-4 text-text-muted" />
+                      <span className="text-text-muted text-sm">
+                        {article.readTime}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-text mb-3 group-hover:text-primary-light transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-text-secondary text-sm mb-4 leading-relaxed">
+                      {article.excerpt}
+                    </p>
+                    <span className="inline-flex items-center gap-2 text-primary-light text-sm font-medium group-hover:gap-3 transition-all">
+                      {isExternal ? (
+                        <>
+                          Read on Medium{" "}
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </>
+                      ) : (
+                        <>
+                          Read article <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </span>
+                  </div>
+                </CardWrapper>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 

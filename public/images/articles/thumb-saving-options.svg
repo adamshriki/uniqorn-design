@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1a0f"/>
+      <stop offset="100%" stop-color="#050f08"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg4)"/>
+  <!-- Large floppy disk -->
+  <rect x="280" y="80" width="240" height="260" rx="12" fill="#0f2518" stroke="#22c55e60" stroke-width="2"/>
+  <rect x="320" y="80" width="160" height="80" rx="4" fill="#0a1a10" stroke="#22c55e40" stroke-width="1"/>
+  <rect x="350" y="92" width="100" height="8" rx="4" fill="#22c55e30"/>
+  <rect x="350" y="110" width="60" height="8" rx="4" fill="#22c55e20"/>
+  <rect x="320" y="240" width="160" height="80" rx="8" fill="#0d2015" stroke="#22c55e50" stroke-width="1"/>
+  <rect x="340" y="256" width="120" height="8" rx="4" fill="#22c55e40"/>
+  <rect x="340" y="276" width="80" height="8" rx="4" fill="#22c55e30"/>
+  <!-- Small save icons scattered -->
+  <!-- Cloud save -->
+  <path d="M120,150 Q120,120 150,120 Q160,100 185,110 Q210,105 210,130 Q230,130 230,150 Q230,170 210,170 L140,170 Q120,170 120,150Z" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.4"/>
+  <line x1="175" y1="140" x2="175" y2="162" stroke="#22c55e" stroke-width="2" opacity="0.4"/>
+  <polyline points="165,152 175,162 185,152" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.4"/>
+  <!-- Check circle -->
+  <circle cx="660" cy="140" r="35" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.4"/>
+  <polyline points="642,140 655,155 678,128" fill="none" stroke="#22c55e" stroke-width="3" opacity="0.5"/>
+  <!-- Autosave arrows -->
+  <path d="M620,320 A30,30 0 1,1 650,290" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.3"/>
+  <polygon points="654,290 650,280 644,294" fill="#22c55e" opacity="0.3"/>
+  <!-- Undo icon -->
+  <path d="M140,330 A25,25 0 1,1 170,305" fill="none" stroke="#22c55e" stroke-width="2" opacity="0.3"/>
+  <polygon points="136,330 144,320 148,336" fill="#22c55e" opacity="0.3"/>
+</svg>

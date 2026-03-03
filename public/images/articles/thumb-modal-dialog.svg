@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a0a14"/>
+      <stop offset="100%" stop-color="#100510"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg5)"/>
+  <!-- Background app mockup (dimmed) -->
+  <rect x="60" y="40" width="680" height="370" rx="12" fill="#1a0f18" opacity="0.5"/>
+  <rect x="60" y="40" width="680" height="35" rx="12" fill="#201520" opacity="0.5"/>
+  <rect x="80" y="100" width="200" height="12" rx="6" fill="#f4336330" opacity="0.3"/>
+  <rect x="80" y="130" width="300" height="8" rx="4" fill="#f4336320" opacity="0.3"/>
+  <rect x="80" y="150" width="280" height="8" rx="4" fill="#f4336320" opacity="0.3"/>
+  <!-- Overlay dim -->
+  <rect width="800" height="450" fill="#000000" opacity="0.4"/>
+  <!-- Modal dialog -->
+  <rect x="200" y="100" width="400" height="250" rx="16" fill="#1f1020" stroke="#f4336380" stroke-width="1.5"/>
+  <!-- Modal header -->
+  <rect x="230" y="130" width="160" height="14" rx="7" fill="#f4336360"/>
+  <!-- Close X -->
+  <line x1="565" y1="120" x2="575" y2="130" stroke="#f4336380" stroke-width="2" stroke-linecap="round"/>
+  <line x1="575" y1="120" x2="565" y2="130" stroke="#f4336380" stroke-width="2" stroke-linecap="round"/>
+  <!-- Modal body -->
+  <rect x="230" y="168" width="340" height="8" rx="4" fill="#f4336330"/>
+  <rect x="230" y="188" width="300" height="8" rx="4" fill="#f4336325"/>
+  <rect x="230" y="208" width="260" height="8" rx="4" fill="#f4336320"/>
+  <!-- Buttons -->
+  <rect x="340" y="250" width="110" height="40" rx="8" fill="#f43363" opacity="0.7"/>
+  <rect x="360" y="264" width="70" height="10" rx="5" fill="#1f1020" opacity="0.5"/>
+  <rect x="230" y="250" width="90" height="40" rx="8" fill="none" stroke="#f4336360" stroke-width="1.5"/>
+  <rect x="248" y="264" width="54" height="10" rx="5" fill="#f4336340"/>
+  <!-- Warning icon -->
+  <circle cx="400" cy="80" r="20" fill="#f4336330"/>
+  <text x="400" y="88" text-anchor="middle" font-size="24" font-weight="bold" fill="#f43363" opacity="0.8">!</text>
+</svg>
