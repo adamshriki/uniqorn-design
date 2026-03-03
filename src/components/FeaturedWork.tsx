@@ -72,14 +72,14 @@ export default function FeaturedWork() {
             >
               <Link
                 href={`/work/${project.slug}`}
-                className="group block rounded-2xl overflow-hidden border border-border-light hover:border-primary/30 bg-bg-card/50 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10"
+                className="group block rounded-2xl overflow-hidden border border-border-light hover:border-primary/30 bg-bg-card backdrop-blur-sm transition-colors duration-500 hover:shadow-2xl hover:shadow-primary/10"
               >
                 {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-bg-card">
+                <div className="relative aspect-[16/10] overflow-hidden bg-black">
                   <img
                     src={img(project.thumbnail)}
                     alt={project.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 will-change-transform"
+                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 will-change-transform backface-hidden"
                   />
                   {/* Overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -134,14 +134,14 @@ export default function FeaturedWork() {
             >
               <Link
                 href={`/work/${project.slug}`}
-                className="group block rounded-2xl overflow-hidden border border-border-light hover:border-primary/30 bg-bg-card/50 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10"
+                className="group block rounded-2xl overflow-hidden border border-border-light hover:border-primary/30 bg-bg-card backdrop-blur-sm transition-colors duration-500 hover:shadow-xl hover:shadow-primary/10"
               >
                 {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-bg-card">
+                <div className="relative aspect-[16/10] overflow-hidden bg-black">
                   <img
                     src={img(project.thumbnail)}
                     alt={project.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 will-change-transform"
+                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 will-change-transform backface-hidden"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div
