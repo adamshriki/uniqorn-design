@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { projects } from "@/data/projects";
+import { projects, MediaItem } from "@/data/projects";
 import { img } from "@/lib/utils";
 
 const categoryColors: Record<string, string> = {
@@ -18,22 +18,31 @@ const categoryColors: Record<string, string> = {
 export default function ProjectPageClient({ slug }: { slug: string }) {
   const projectIndex = projects.findIndex((p) => p.slug === slug);
   const project = projects[projectIndex];
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  // Build lightbox-eligible indices (images and gifs only, not videos)
+  const lightboxItems = useMemo(() => {
+    if (!project) return [];
+    return project.media
+      .map((item, i) => ({ item, index: i }))
+      .filter(({ item }) => item.type === "image" || item.type === "gif");
+  }, [project]);
+
+  const [lightboxPos, setLightboxPos] = useState<number | null>(null);
+
+  const closeLightbox = useCallback(() => setLightboxPos(null), []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (lightboxIndex === null) return;
+      if (lightboxPos === null) return;
       if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowRight" && project && lightboxIndex < project.images.length - 1)
-        setLightboxIndex(lightboxIndex + 1);
-      if (e.key === "ArrowLeft" && lightboxIndex > 0)
-        setLightboxIndex(lightboxIndex - 1);
+      if (e.key === "ArrowRight" && lightboxPos < lightboxItems.length - 1)
+        setLightboxPos(lightboxPos + 1);
+      if (e.key === "ArrowLeft" && lightboxPos > 0)
+        setLightboxPos(lightboxPos - 1);
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [lightboxIndex, closeLightbox, project]);
+  }, [lightboxPos, closeLightbox, lightboxItems.length]);
 
   if (!project) {
     return (
@@ -53,7 +62,37 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
   const prev = projectIndex > 0 ? projects[projectIndex - 1] : null;
   const next = projectIndex < projects.length - 1 ? projects[projectIndex + 1] : null;
   const paragraphs = project.description.split("\n\n");
-  const galleryImages = project.images.slice(1);
+  const heroMedia = project.media[0];
+  const galleryMedia = project.media.slice(1);
+
+  const openLightbox = (mediaIndex: number) => {
+    const pos = lightboxItems.findIndex(({ index }) => index === mediaIndex);
+    if (pos !== -1) setLightboxPos(pos);
+  };
+
+  const renderMedia = (item: MediaItem, mediaIndex: number, altSuffix: string) => {
+    if (item.type === "video") {
+      return (
+        <video
+          src={img(item.src)}
+          controls
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full rounded-2xl"
+        />
+      );
+    }
+    return (
+      <img
+        src={img(item.src)}
+        alt={`${project.name} - ${altSuffix}`}
+        className="w-full object-cover cursor-pointer"
+        onClick={() => openLightbox(mediaIndex)}
+      />
+    );
+  };
 
   return (
     <main>
@@ -117,7 +156,7 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
         </div>
       </section>
 
-      {/* Hero Image */}
+      {/* Hero Media */}
       <section className="px-6 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -125,15 +164,8 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
           transition={{ duration: 0.7, delay: 0.3 }}
           className="max-w-5xl mx-auto"
         >
-          <div
-            className="rounded-2xl overflow-hidden shadow-2xl shadow-black/30 cursor-pointer"
-            onClick={() => setLightboxIndex(0)}
-          >
-            <img
-              src={img(project.images[0])}
-              alt={project.name}
-              className="w-full object-cover"
-            />
+          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/30">
+            {renderMedia(heroMedia, 0, "hero")}
           </div>
         </motion.div>
       </section>
@@ -154,27 +186,51 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
         </motion.div>
       </section>
 
-      {/* Image Gallery */}
-      {galleryImages.length > 0 && (
+      {/* Media Gallery */}
+      {galleryMedia.length > 0 && (
         <section className="px-6 pb-20">
           <div className="max-w-5xl mx-auto space-y-6">
-            {galleryImages.map((image, i) => {
+            {galleryMedia.map((item, i) => {
               const globalIndex = i + 1;
+
+              if (item.type === "video") {
+                return (
+                  <motion.div
+                    key={`media-${globalIndex}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.5 }}
+                    className="rounded-2xl overflow-hidden shadow-lg shadow-black/20"
+                  >
+                    <video
+                      src={img(item.src)}
+                      controls
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full"
+                    />
+                  </motion.div>
+                );
+              }
+
               const isFullWidth = i % 3 === 0;
 
               if (isFullWidth) {
                 return (
                   <motion.div
-                    key={image}
+                    key={`media-${globalIndex}`}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.5 }}
                     className="rounded-2xl overflow-hidden shadow-lg shadow-black/20 cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow duration-300"
-                    onClick={() => setLightboxIndex(globalIndex)}
+                    onClick={() => openLightbox(globalIndex)}
                   >
                     <img
-                      src={img(image)}
+                      src={img(item.src)}
                       alt={`${project.name} - ${globalIndex + 1}`}
                       className="w-full object-cover"
                     />
@@ -182,36 +238,36 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
                 );
               }
 
-              // For pairs (i%3 === 1), render a 2-col row
               if (i % 3 === 1) {
-                const nextImage = galleryImages[i + 1];
+                const nextItem = galleryMedia[i + 1];
+                const nextIsImageOrGif = nextItem && nextItem.type !== "video";
                 return (
-                  <div key={image} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div key={`media-${globalIndex}`} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-50px" }}
                       transition={{ duration: 0.5 }}
                       className="rounded-2xl overflow-hidden shadow-lg shadow-black/20 cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow duration-300"
-                      onClick={() => setLightboxIndex(globalIndex)}
+                      onClick={() => openLightbox(globalIndex)}
                     >
                       <img
-                        src={img(image)}
+                        src={img(item.src)}
                         alt={`${project.name} - ${globalIndex + 1}`}
                         className="w-full h-full object-cover"
                       />
                     </motion.div>
-                    {nextImage && (
+                    {nextIsImageOrGif && (
                       <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-50px" }}
                         transition={{ duration: 0.5, delay: 0.1 }}
                         className="rounded-2xl overflow-hidden shadow-lg shadow-black/20 cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow duration-300"
-                        onClick={() => setLightboxIndex(globalIndex + 1)}
+                        onClick={() => openLightbox(globalIndex + 1)}
                       >
                         <img
-                          src={img(nextImage)}
+                          src={img(nextItem.src)}
                           alt={`${project.name} - ${globalIndex + 2}`}
                           className="w-full h-full object-cover"
                         />
@@ -221,7 +277,6 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
                 );
               }
 
-              // i%3 === 2 is already rendered as part of the pair above
               return null;
             })}
           </div>
@@ -258,7 +313,7 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
 
       {/* Lightbox */}
       <AnimatePresence>
-        {lightboxIndex !== null && (
+        {lightboxPos !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -267,7 +322,6 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
             className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-pointer"
             onClick={closeLightbox}
           >
-            {/* Close button */}
             <button
               className="absolute top-6 right-6 text-white/70 hover:text-white text-4xl font-light z-10 transition-colors"
               onClick={closeLightbox}
@@ -275,46 +329,43 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
               ×
             </button>
 
-            {/* Nav arrows */}
-            {lightboxIndex > 0 && (
+            {lightboxPos > 0 && (
               <button
                 className="absolute left-4 md:left-8 text-white/60 hover:text-white text-5xl font-light z-10 transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setLightboxIndex(lightboxIndex - 1);
+                  setLightboxPos(lightboxPos - 1);
                 }}
               >
                 ‹
               </button>
             )}
-            {lightboxIndex < project.images.length - 1 && (
+            {lightboxPos < lightboxItems.length - 1 && (
               <button
                 className="absolute right-4 md:right-8 text-white/60 hover:text-white text-5xl font-light z-10 transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setLightboxIndex(lightboxIndex + 1);
+                  setLightboxPos(lightboxPos + 1);
                 }}
               >
                 ›
               </button>
             )}
 
-            {/* Image */}
             <motion.img
-              key={lightboxIndex}
+              key={lightboxPos}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              src={img(project.images[lightboxIndex])}
-              alt={`${project.name} - ${lightboxIndex + 1}`}
+              src={img(lightboxItems[lightboxPos].item.src)}
+              alt={`${project.name} - ${lightboxPos + 1}`}
               className="max-w-full max-h-[90vh] object-contain rounded-lg cursor-default"
               onClick={(e) => e.stopPropagation()}
             />
 
-            {/* Counter */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-sm">
-              {lightboxIndex + 1} / {project.images.length}
+              {lightboxPos + 1} / {lightboxItems.length}
             </div>
           </motion.div>
         )}
