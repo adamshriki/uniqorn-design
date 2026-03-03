@@ -288,34 +288,46 @@ function ShapeNode({ size, color, shape, index }: { size: number; color: string;
 }
 
 /* ─── Convergence Particles ─── */
+// Use deterministic positions to avoid random jumps on re-render
+const PARTICLE_ANGLES = Array.from({ length: 30 }, (_, i) => ({
+  angle: (i / 30) * Math.PI * 2,
+  radius: 180 + (((i * 7 + 13) % 20) / 20) * 120,
+  size: 3 + (i % 3) * 2,
+  color: ["#7C3AED", "#06B6D4", "#F59E0B", "#10B981", "#EC4899"][i % 5],
+}));
+
 function ConvergenceParticles({ active }: { active: boolean }) {
   return (
     <>
-      {Array.from({ length: 30 }).map((_, i) => {
-        const angle = (i / 30) * Math.PI * 2;
-        const radius = 180 + Math.random() * 120;
-        const color = ["#7C3AED", "#06B6D4", "#F59E0B", "#10B981", "#EC4899"][i % 5];
+      {PARTICLE_ANGLES.map((p, i) => {
+        const startX = Math.cos(p.angle) * p.radius;
+        const startY = Math.sin(p.angle) * p.radius;
         return (
           <motion.div
             key={i}
             className="absolute left-1/2 top-1/2 rounded-full"
             style={{
-              width: 3 + (i % 3) * 2,
-              height: 3 + (i % 3) * 2,
-              backgroundColor: color,
+              width: p.size,
+              height: p.size,
+              backgroundColor: p.color,
+              x: startX,
+              y: startY,
             }}
             animate={active ? {
-              x: [Math.cos(angle) * radius, Math.cos(angle) * radius * 0.3, 0],
-              y: [Math.sin(angle) * radius, Math.sin(angle) * radius * 0.3, 0],
-              opacity: [0, 1, 0],
-              scale: [0.5, 1.5, 0],
+              x: [startX, 0],
+              y: [startY, 0],
+              opacity: [0, 0.9, 0],
+              scale: [0.3, 1.2, 0],
             } : {
+              x: startX,
+              y: startY,
               opacity: 0,
+              scale: 0.3,
             }}
             transition={{
               duration: 2,
               delay: i * 0.04,
-              ease: "easeIn",
+              ease: [0.4, 0, 0.2, 1],
             }}
           />
         );
@@ -460,42 +472,6 @@ function ProductScreens({ phase }: { phase: string }) {
         </motion.div>
       </motion.div>
 
-      {/* Floating badges */}
-      <motion.div
-        className="absolute left-0 md:left-4 bottom-6 md:bottom-10"
-        initial={{ opacity: 0, y: 15 }}
-        animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-        transition={{ delay: 0.9, duration: 0.4 }}
-      >
-        <motion.div
-          animate={isVisible ? { y: [0, -4, 0] } : {}}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="px-2.5 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/20 backdrop-blur-sm"
-        >
-          <div className="flex items-center gap-1.5">
-            <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="#10B981" strokeWidth="2" fill="none" strokeLinecap="round" /></svg>
-            <span className="text-[9px] md:text-[10px] text-emerald-400 font-medium whitespace-nowrap">Design System</span>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        className="absolute right-0 md:right-6 bottom-14 md:bottom-20"
-        initial={{ opacity: 0, y: 15 }}
-        animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-        transition={{ delay: 1.1, duration: 0.4 }}
-      >
-        <motion.div
-          animate={isVisible ? { y: [0, -3, 0] } : {}}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="px-2.5 py-1.5 rounded-lg bg-primary/15 border border-primary/20 backdrop-blur-sm"
-        >
-          <div className="flex items-center gap-1.5">
-            <svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.5" fill="none" stroke="#7C3AED" strokeWidth="1.5" /><circle cx="6" cy="6" r="1.5" fill="#A78BFA" /></svg>
-            <span className="text-[9px] md:text-[10px] text-primary-light font-medium whitespace-nowrap">Pixel Perfect</span>
-          </div>
-        </motion.div>
-      </motion.div>
     </div>
   );
 }
@@ -582,19 +558,6 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
           {/* LEFT: Text content */}
           <div className="order-2 lg:order-1">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 backdrop-blur-sm mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-xs sm:text-sm text-primary-light font-medium">
-                AI · SaaS · Cybersecurity
-              </span>
-            </motion.div>
-
             {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 40 }}
@@ -659,9 +622,9 @@ export default function HeroSection() {
               className="flex flex-wrap gap-6 sm:gap-10"
             >
               {[
-                { value: 13, suffix: "+", label: "Projects" },
-                { value: 5, suffix: "+", label: "Years" },
-                { value: 4, suffix: "", label: "Industries" },
+                { value: 100, suffix: "+", label: "Projects" },
+                { value: 15, suffix: "+", label: "Years" },
+                { value: 8, suffix: "", label: "Industries" },
               ].map((stat) => (
                 <div key={stat.label}>
                   <p className="text-2xl md:text-3xl font-bold font-display bg-gradient-to-r from-primary-light to-secondary bg-clip-text text-transparent">
