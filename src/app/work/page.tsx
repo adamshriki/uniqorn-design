@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { projects } from "@/data/projects";
@@ -23,9 +24,38 @@ const categoryGradients: Record<string, string> = {
 };
 
 export default function WorkPage() {
+  return (
+    <Suspense>
+      <WorkPageInner />
+    </Suspense>
+  );
+}
+
+function WorkPageInner() {
+  const searchParams = useSearchParams();
+  const tagFromUrl = searchParams.get("tag");
   const [activeTag, setActiveTag] = useState("All");
-  const allTags = ["All", ...Array.from(new Set(projects.flatMap((p) => p.tags)))];
-  const filtered = activeTag === "All" ? projects : projects.filter((p) => p.tags.includes(activeTag));
+
+  useEffect(() => {
+    if (tagFromUrl) {
+      // Find tag or category case-insensitively
+      const allOptions = [
+        ...Array.from(new Set(projects.flatMap((p) => p.tags))),
+        ...Array.from(new Set(projects.map((p) => p.category))),
+      ];
+      const match = allOptions.find((t) => t.toLowerCase() === tagFromUrl.toLowerCase());
+      if (match) setActiveTag(match);
+    }
+  }, [tagFromUrl]);
+
+  const tagSet = new Set(projects.flatMap((p) => p.tags));
+  const categorySet = new Set(projects.map((p) => p.category));
+  const allFilters = ["All", ...Array.from(tagSet)];
+  const filtered = activeTag === "All"
+    ? projects
+    : categorySet.has(activeTag as any)
+      ? projects.filter((p) => p.category === activeTag)
+      : projects.filter((p) => p.tags.includes(activeTag));
 
   return (
     <main>
@@ -74,11 +104,11 @@ export default function WorkPage() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-wrap gap-3 justify-center"
           >
-            {allTags.map((tag) => (
+            {allFilters.map((tag) => (
               <button
                 key={tag}
                 onClick={() => setActiveTag(tag)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer ${
                   activeTag === tag
                     ? "bg-primary text-white shadow-lg shadow-primary/25"
                     : "border border-border-light text-text-secondary hover:text-text hover:border-primary/40 hover:bg-primary/5"
@@ -128,7 +158,13 @@ export default function WorkPage() {
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-3 py-1 text-xs rounded-full bg-bg-glass border border-border text-text-secondary"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setActiveTag(tag);
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }}
+                            className="px-3 py-1 text-xs rounded-full bg-bg-glass border border-border text-text-secondary hover:text-primary-light hover:border-primary/40 cursor-pointer transition-colors"
                           >
                             {tag}
                           </span>

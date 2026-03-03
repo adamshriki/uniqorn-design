@@ -20,7 +20,7 @@ export const projects: Project[] = [
     name: "Pendo",
     subtitle: "Machine Learning-powered product analytics",
     category: "SaaS",
-    tags: ["Product Design", "SaaS"],
+    tags: ["AI", "Product Design", "SaaS"],
     description: "Pendo, an American SaaS web app worth $2.6 billion with clients all over the world, aims to give product managers the best tools to analyze and improve their digital product using useful insights. The Israeli site focuses on multiple features, but mainly on integrating machine learning for the first time in the company.\n\nBy joining forces with Pendo, we sought to integrate the power of Machine Learning and design an impressive next generation version of their NPS tool. To achieve this, we made sure to refine the existing NPS tool, giving it the incredible superpowers of ML technology to boost its capabilities.\n\nIn addition to the extensive redesign of the NPS tool, our team has also crafted a brand new transformative product within Pendo called \"Churn Insights\" – a state-of-the-art machine learning tool that aids users in predicting how to reduce customer churn and maximize user retention rates through enhancing or reducing certain events on their product.\n\nThis groundbreaking feature is sure to revolutionize the way businesses manage their user engagement and retention strategies.",
     media: [
       { type: "image", src: "/images/projects/pendo-0.png" },
@@ -36,7 +36,7 @@ export const projects: Project[] = [
     name: "Lunar.dev",
     subtitle: "Production-grade API consumption management",
     category: "SaaS",
-    tags: ["Product Design", "Motion Design", "Illustrations", "SaaS"],
+    tags: ["AI", "Product Design", "Motion Design", "Illustrations", "SaaS"],
     description: "Lunar.dev is an Israeli startup and the all-in-one platform built to monitor and manage egress traffic and API consumption at scale, using no-code workflows to maintain flawless performance and cut costs for any API provider.\n\nAs lunar.dev was primarily a \"backend product\" for developers, this was the first time the Lunar team introduced and implemented UI/UX workflows.\n\nThe product design language was adapted from the existing brand identity, with adjustments to typography and colors to meet modern digital product requirements. A complete \"design tokens\" and \"design system\" was created from scratch to support a rich UI components library.\n\nCollaborating with Lunar's product managers, we successfully converted ideas into delightful user flows, ultimately fulfilling their dream of becoming a worldwide leader in the API consumption industry.\n\nWe also had the pleasure of designing Lunar's website with implementing delightful animations.",
     media: [
       { type: "image", src: "/images/projects/lunar-0.png" },

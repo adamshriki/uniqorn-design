@@ -2,7 +2,9 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { projects } from "@/data/projects";
 
 /* ─── Animated Illustrations ─── */
 
@@ -455,58 +457,74 @@ function FintechIllustration() {
 
 /* ─── Data ─── */
 
-const specs = [
+// Map specializations to tag filters — project counts are computed dynamically
+const specsData = [
   {
     title: "Artificial Intelligence",
     subtitle: "AI & Machine Learning",
+    tag: "AI",
     description:
       "Designing intuitive interfaces for complex AI systems — from machine learning dashboards to conversational AI products. We make sophisticated technology feel simple, helping users understand, trust, and interact with AI-powered features through thoughtful UX patterns and clear data visualization.",
     accent: "#8B5CF6",
     accentLight: "#A78BFA",
-    projects: 8,
     Illustration: AIIllustration,
   },
   {
     title: "SaaS",
     subtitle: "Software as a Service",
+    tag: "SaaS",
     description:
       "By creating an intuitive and visually appealing design, humans are more likely to engage with your product and stay longer, resulting in increased user retention. Through an iterative design process, focusing on user behavior insights, we can effectively meet both business objectives and customers' needs.",
     accent: "#7C3AED",
     accentLight: "#A78BFA",
-    projects: 18,
     Illustration: SaaSIllustration,
   },
   {
     title: "Cybersecurity",
     subtitle: "Security Products",
+    tag: "Cybersecurity",
+    filterBy: "category" as const,
     description:
       "Identifying and mitigating vulnerabilities, improving usability, enhancing security measures, educating users, and increasing user adoption by creating intuitive interfaces and well-crafted user flows can increase your product's engagement and ease of use.",
     accent: "#06B6D4",
     accentLight: "#22D3EE",
-    projects: 12,
     Illustration: CyberIllustration,
   },
   {
     title: "Healthtech",
     subtitle: "Digital Health",
+    tag: "Healthtech",
+    filterBy: "category" as const,
     description:
       "Researching the needs of patients and healthcare providers to create interfaces that support better communication, decision-making, and outcomes, with the goal of improving the experience, enhancing functionality, increasing adoption, meeting compliance standards (HIPAA & GDPR), and enhancing brand value.",
     accent: "#10B981",
     accentLight: "#34D399",
-    projects: 9,
     Illustration: HealthtechIllustration,
   },
   {
     title: "Fintech / Crypto",
     subtitle: "Financial Technology",
+    tag: "Fintech",
+    filterBy: "category" as const,
     description:
       "Increasing trust with sensitive financial information and transactions, improving user experience with secure authentication payment methods, encryption, and access control features, as well as tailored data visualizations / infographics to simplify complicated data.",
     accent: "#F59E0B",
     accentLight: "#FBBF24",
-    projects: 14,
     Illustration: FintechIllustration,
   },
 ];
+
+function getProjectCount(spec: typeof specsData[0]): number {
+  if (spec.filterBy === "category") {
+    return projects.filter(p => p.category === spec.tag).length;
+  }
+  return projects.filter(p => p.tags.includes(spec.tag)).length;
+}
+
+const specs = specsData.map(s => ({
+  ...s,
+  projectCount: getProjectCount(s),
+}));
 
 /* ─── Card ─── */
 
@@ -568,15 +586,15 @@ function SpecCard({ spec, index }: { spec: (typeof specs)[0]; index: number }) {
             {spec.description}
           </p>
           <div className="flex items-center gap-6">
-            <a
-              href="/uniqorn-design/work"
+            <Link
+              href={`/work?tag=${encodeURIComponent(spec.tag)}`}
               className="inline-flex items-center gap-2 font-medium group/link"
               style={{ color: spec.accent }}
             >
               See projects
               <ArrowRight size={18} className="group-hover/link:translate-x-1 transition-transform" />
-            </a>
-            <span className="text-text-muted text-sm">{spec.projects} projects</span>
+            </Link>
+            <span className="text-text-muted text-sm">{spec.projectCount} projects</span>
           </div>
         </div>
       </div>
