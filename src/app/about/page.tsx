@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { img } from "@/lib/utils";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -390,12 +391,12 @@ export default function AboutPage() {
             <p className="text-text-secondary mb-8 text-lg">
               Let&apos;s create something extraordinary together.
             </p>
-            <a
+            <Link
               href="/contact"
               className="inline-block px-8 py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-semibold text-lg hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-105"
             >
               Get in Touch
-            </a>
+            </Link>
           </motion.div>
         </div>
       </section>
