@@ -5,7 +5,7 @@ import { img } from "@/lib/utils";
 const logos = [
   "Gett", "Hysolate", "Atera-3", "Lunar", "Pendo", "Optitex", "Carbyne",
   "Pipelbiz", "Ummanu", "LQFI", "Real", "Grin", "Careology", "Aetrex",
-  "Aerospheres", "Perception", "Mend",
+  "Aerospheres", "Perception", "Mend", "MaterialsZone", "CommBox",
 ];
 
 export default function ClientLogos() {
