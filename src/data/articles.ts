@@ -22,7 +22,7 @@ export const articles: Article[] = [
     author: "Adam Shriki",
     category: "Product Design",
     thumbnail: "/images/articles/thumb-saas-guide.svg",
-    heroImage: "/images/articles/saas-guide-hero.webp",
+    heroImage: "/images/articles/thumb-saas-guide.svg",
   },
   {
     slug: "ux-ui-design-review-template",
