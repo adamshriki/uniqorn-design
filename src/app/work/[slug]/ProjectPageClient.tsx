@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { projects, MediaItem } from "@/data/projects";
 import { img } from "@/lib/utils";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 const categoryColors: Record<string, string> = {
   SaaS: "#7C3AED",
@@ -15,44 +16,74 @@ const categoryColors: Record<string, string> = {
   Fintech: "#F59E0B",
 };
 
+function MediaRenderer({ item, onClick, className = "" }: { item: MediaItem; onClick?: () => void; className?: string }) {
+  if (item.type === "video") {
+    return (
+      <video
+        src={img(item.src)}
+        controls
+        autoPlay
+        muted
+        loop
+        playsInline
+        className={`w-full rounded-xl ${className}`}
+      />
+    );
+  }
+  return (
+    <img
+      src={img(item.src)}
+      alt=""
+      className={`w-full rounded-xl ${onClick ? "cursor-pointer hover:opacity-90 transition-opacity" : ""} ${className}`}
+      onClick={onClick}
+    />
+  );
+}
+
 export default function ProjectPageClient({ slug }: { slug: string }) {
   const projectIndex = projects.findIndex((p) => p.slug === slug);
   const project = projects[projectIndex];
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  // Build lightbox-eligible indices (images and gifs only, not videos)
-  const lightboxItems = useMemo(() => {
-    if (!project) return [];
-    return project.media
-      .map((item, i) => ({ item, index: i }))
-      .filter(({ item }) => item.type === "image" || item.type === "gif");
-  }, [project]);
+  // Collect lightboxable indices (images and gifs only)
+  const lightboxableIndices = project
+    ? project.media.map((m, i) => (m.type !== "video" ? i : -1)).filter((i) => i >= 0)
+    : [];
 
-  const [lightboxPos, setLightboxPos] = useState<number | null>(null);
-
-  const closeLightbox = useCallback(() => setLightboxPos(null), []);
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  const goPrev = useCallback(() => {
+    if (lightboxIndex === null) return;
+    const pos = lightboxableIndices.indexOf(lightboxIndex);
+    if (pos > 0) setLightboxIndex(lightboxableIndices[pos - 1]);
+  }, [lightboxIndex, lightboxableIndices]);
+  const goNext = useCallback(() => {
+    if (lightboxIndex === null) return;
+    const pos = lightboxableIndices.indexOf(lightboxIndex);
+    if (pos < lightboxableIndices.length - 1) setLightboxIndex(lightboxableIndices[pos + 1]);
+  }, [lightboxIndex, lightboxableIndices]);
 
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (lightboxPos === null) return;
+    if (lightboxIndex === null) return;
+    const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowRight" && lightboxPos < lightboxItems.length - 1)
-        setLightboxPos(lightboxPos + 1);
-      if (e.key === "ArrowLeft" && lightboxPos > 0)
-        setLightboxPos(lightboxPos - 1);
+      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") goNext();
     };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [lightboxPos, closeLightbox, lightboxItems.length]);
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handler);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handler);
+    };
+  }, [lightboxIndex, closeLightbox, goPrev, goNext]);
 
   if (!project) {
     return (
       <main>
         <Navigation />
         <div className="pt-40 pb-32 px-6 text-center">
-          <h1 className="text-4xl font-bold text-text">Project not found</h1>
-          <Link href="/work" className="text-primary-light mt-4 inline-block hover:underline">
-            ← Back to Work
-          </Link>
+          <h1 className="text-4xl font-bold">Project not found</h1>
+          <Link href="/work" className="text-primary-light mt-4 inline-block hover:underline">← Back to Work</Link>
         </div>
         <Footer />
       </main>
@@ -64,35 +95,6 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
   const paragraphs = project.description.split("\n\n");
   const heroMedia = project.media[0];
   const galleryMedia = project.media.slice(1);
-
-  const openLightbox = (mediaIndex: number) => {
-    const pos = lightboxItems.findIndex(({ index }) => index === mediaIndex);
-    if (pos !== -1) setLightboxPos(pos);
-  };
-
-  const renderMedia = (item: MediaItem, mediaIndex: number, altSuffix: string) => {
-    if (item.type === "video") {
-      return (
-        <video
-          src={img(item.src)}
-          controls
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full rounded-2xl"
-        />
-      );
-    }
-    return (
-      <img
-        src={img(item.src)}
-        alt={`${project.name} - ${altSuffix}`}
-        className="w-full object-cover cursor-pointer"
-        onClick={() => openLightbox(mediaIndex)}
-      />
-    );
-  };
 
   return (
     <main>
@@ -106,51 +108,27 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
         </div>
         <div className="max-w-4xl mx-auto relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Link
-              href="/work"
-              className="text-text-secondary hover:text-primary-light transition-colors text-sm inline-flex items-center gap-2 mb-8"
-            >
+            <Link href="/work" className="text-text-secondary hover:text-primary-light transition-colors text-sm inline-flex items-center gap-2 mb-8">
               ← Back to Work
             </Link>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex items-center gap-3 mb-4 flex-wrap"
-          >
-            <span
-              className="px-3 py-1 rounded-full text-xs font-semibold text-white"
-              style={{ backgroundColor: categoryColors[project.category] }}
-            >
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="flex items-center gap-3 mb-4 flex-wrap">
+            <span className="px-3 py-1 rounded-full text-xs font-semibold text-white" style={{ backgroundColor: categoryColors[project.category] }}>
               {project.category}
             </span>
             {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 text-xs rounded-full bg-bg-glass border border-border text-text-secondary"
-              >
-                {tag}
-              </span>
+              <span key={tag} className="px-3 py-1 text-xs rounded-full bg-bg-glass border border-border text-text-secondary">{tag}</span>
             ))}
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-5xl md:text-7xl font-bold font-[family-name:var(--font-display)] mb-4 bg-gradient-to-r from-text via-primary-light to-secondary bg-clip-text text-transparent"
-          >
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }}
+            className="text-5xl md:text-7xl font-bold font-[family-name:var(--font-display)] mb-4 bg-gradient-to-r from-text via-primary-light to-secondary bg-clip-text text-transparent">
             {project.name}
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-text-secondary text-xl md:text-2xl"
-          >
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-text-secondary text-xl md:text-2xl">
             {project.subtitle}
           </motion.p>
         </div>
@@ -158,126 +136,47 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
 
       {/* Hero Media */}
       <section className="px-6 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="max-w-5xl mx-auto"
-        >
+        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="max-w-5xl mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/30">
-            {renderMedia(heroMedia, 0, "hero")}
+            <MediaRenderer
+              item={heroMedia}
+              onClick={heroMedia.type !== "video" ? () => setLightboxIndex(0) : undefined}
+            />
           </div>
         </motion.div>
       </section>
 
       {/* Description */}
-      <section className="px-6 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="max-w-3xl mx-auto space-y-6"
-        >
+      <section className="px-6 pb-16">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
+          className="max-w-3xl mx-auto space-y-6">
           {paragraphs.map((p, i) => (
-            <p key={i} className="text-text-secondary text-lg leading-relaxed">
-              {p}
-            </p>
+            <p key={i} className="text-text-secondary text-lg leading-relaxed">{p}</p>
           ))}
         </motion.div>
       </section>
 
-      {/* Media Gallery */}
+      {/* Gallery */}
       {galleryMedia.length > 0 && (
         <section className="px-6 pb-20">
           <div className="max-w-5xl mx-auto space-y-6">
             {galleryMedia.map((item, i) => {
               const globalIndex = i + 1;
-
-              if (item.type === "video") {
-                return (
-                  <motion.div
-                    key={`media-${globalIndex}`}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.5 }}
-                    className="rounded-2xl overflow-hidden shadow-lg shadow-black/20"
-                  >
-                    <video
-                      src={img(item.src)}
-                      controls
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="w-full"
-                    />
-                  </motion.div>
-                );
-              }
-
-              const isFullWidth = i % 3 === 0;
-
-              if (isFullWidth) {
-                return (
-                  <motion.div
-                    key={`media-${globalIndex}`}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.5 }}
-                    className="rounded-2xl overflow-hidden shadow-lg shadow-black/20 cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow duration-300"
-                    onClick={() => openLightbox(globalIndex)}
-                  >
-                    <img
-                      src={img(item.src)}
-                      alt={`${project.name} - ${globalIndex + 1}`}
-                      className="w-full object-cover"
-                    />
-                  </motion.div>
-                );
-              }
-
-              if (i % 3 === 1) {
-                const nextItem = galleryMedia[i + 1];
-                const nextIsImageOrGif = nextItem && nextItem.type !== "video";
-                return (
-                  <div key={`media-${globalIndex}`} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <motion.div
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ duration: 0.5 }}
-                      className="rounded-2xl overflow-hidden shadow-lg shadow-black/20 cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow duration-300"
-                      onClick={() => openLightbox(globalIndex)}
-                    >
-                      <img
-                        src={img(item.src)}
-                        alt={`${project.name} - ${globalIndex + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </motion.div>
-                    {nextIsImageOrGif && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        className="rounded-2xl overflow-hidden shadow-lg shadow-black/20 cursor-pointer hover:shadow-xl hover:shadow-black/30 transition-shadow duration-300"
-                        onClick={() => openLightbox(globalIndex + 1)}
-                      >
-                        <img
-                          src={img(nextItem.src)}
-                          alt={`${project.name} - ${globalIndex + 2}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </motion.div>
-                    )}
-                  </div>
-                );
-              }
-
-              return null;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5 }}
+                  className="rounded-2xl overflow-hidden shadow-lg shadow-black/20"
+                >
+                  <MediaRenderer
+                    item={item}
+                    onClick={item.type !== "video" ? () => setLightboxIndex(globalIndex) : undefined}
+                  />
+                </motion.div>
+              );
             })}
           </div>
         </section>
@@ -289,23 +188,15 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
           {prev ? (
             <Link href={`/work/${prev.slug}`} className="group text-left">
               <span className="text-text-muted text-sm">← Previous</span>
-              <p className="text-text font-semibold group-hover:text-primary-light transition-colors">
-                {prev.name}
-              </p>
+              <p className="text-text font-semibold group-hover:text-primary-light transition-colors">{prev.name}</p>
             </Link>
-          ) : (
-            <div />
-          )}
+          ) : <div />}
           {next ? (
             <Link href={`/work/${next.slug}`} className="group text-right">
               <span className="text-text-muted text-sm">Next →</span>
-              <p className="text-text font-semibold group-hover:text-primary-light transition-colors">
-                {next.name}
-              </p>
+              <p className="text-text font-semibold group-hover:text-primary-light transition-colors">{next.name}</p>
             </Link>
-          ) : (
-            <div />
-          )}
+          ) : <div />}
         </div>
       </section>
 
@@ -313,59 +204,39 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
 
       {/* Lightbox */}
       <AnimatePresence>
-        {lightboxPos !== null && (
+        {lightboxIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-pointer"
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
             onClick={closeLightbox}
           >
-            <button
-              className="absolute top-6 right-6 text-white/70 hover:text-white text-4xl font-light z-10 transition-colors"
-              onClick={closeLightbox}
-            >
-              ×
+            <button onClick={closeLightbox} className="absolute top-6 right-6 text-white/70 hover:text-white z-50">
+              <X size={32} />
             </button>
-
-            {lightboxPos > 0 && (
-              <button
-                className="absolute left-4 md:left-8 text-white/60 hover:text-white text-5xl font-light z-10 transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightboxPos(lightboxPos - 1);
-                }}
-              >
-                ‹
+            {lightboxableIndices.indexOf(lightboxIndex) > 0 && (
+              <button onClick={(e) => { e.stopPropagation(); goPrev(); }} className="absolute left-4 text-white/70 hover:text-white z-50">
+                <ChevronLeft size={40} />
               </button>
             )}
-            {lightboxPos < lightboxItems.length - 1 && (
-              <button
-                className="absolute right-4 md:right-8 text-white/60 hover:text-white text-5xl font-light z-10 transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightboxPos(lightboxPos + 1);
-                }}
-              >
-                ›
+            {lightboxableIndices.indexOf(lightboxIndex) < lightboxableIndices.length - 1 && (
+              <button onClick={(e) => { e.stopPropagation(); goNext(); }} className="absolute right-4 text-white/70 hover:text-white z-50">
+                <ChevronRight size={40} />
               </button>
             )}
-
             <motion.img
-              key={lightboxPos}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              src={img(lightboxItems[lightboxPos].item.src)}
-              alt={`${project.name} - ${lightboxPos + 1}`}
-              className="max-w-full max-h-[90vh] object-contain rounded-lg cursor-default"
+              key={lightboxIndex}
+              src={img(project.media[lightboxIndex].src)}
+              alt=""
+              className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             />
-
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-sm">
-              {lightboxPos + 1} / {lightboxItems.length}
+            <div className="absolute bottom-6 text-white/50 text-sm">
+              {lightboxableIndices.indexOf(lightboxIndex) + 1} / {lightboxableIndices.length}
             </div>
           </motion.div>
         )}
