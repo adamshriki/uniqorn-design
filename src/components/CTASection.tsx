@@ -24,7 +24,7 @@ export default function CTASection() {
               Let&apos;s discuss how we can help you create a product your users will love.
             </p>
             <a
-              href="mailto:hello@uniqorn.design"
+              href="/uniqorn-design/contact"
               className="inline-block px-10 py-4 rounded-full bg-white text-primary font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
             >
               Let&apos;s Talk

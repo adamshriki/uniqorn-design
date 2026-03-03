@@ -49,12 +49,6 @@ export default function Navigation() {
               {l.label}
             </a>
           ))}
-          <a
-            href="/uniqorn-design/contact"
-            className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-secondary text-white text-sm font-medium hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-105"
-          >
-            Let&apos;s Talk
-          </a>
         </div>
 
         {/* Mobile toggle */}
@@ -86,13 +80,6 @@ export default function Navigation() {
                   {l.label}
                 </a>
               ))}
-              <a
-                href="/uniqorn-design/contact"
-                onClick={() => setMobileOpen(false)}
-                className="px-5 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white text-center font-medium"
-              >
-                Let&apos;s Talk
-              </a>
             </div>
           </motion.div>
         )}
