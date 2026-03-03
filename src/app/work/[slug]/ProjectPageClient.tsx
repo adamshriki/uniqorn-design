@@ -117,7 +117,7 @@ export default function ProjectPageClient({ slug }: { slug: string }) {
             <span className="px-3 py-1 rounded-full text-xs font-semibold text-white" style={{ backgroundColor: categoryColors[project.category] }}>
               {project.category}
             </span>
-            {project.tags.map((tag) => (
+            {project.tags.filter((tag) => tag !== project.category).map((tag) => (
               <span key={tag} className="px-3 py-1 text-xs rounded-full bg-bg-glass border border-border text-text-secondary">{tag}</span>
             ))}
           </motion.div>
