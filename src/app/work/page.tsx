@@ -50,7 +50,9 @@ function WorkPageInner() {
 
   const tagSet = new Set(projects.flatMap((p) => p.tags));
   const categorySet = new Set(projects.map((p) => p.category));
-  const allFilters = ["All", ...Array.from(tagSet)];
+  // Categories that aren't already tags (SaaS is both a tag and category, avoid duplication)
+  const extraCategories = Array.from(categorySet).filter((c) => !tagSet.has(c));
+  const allFilters = ["All", ...extraCategories, ...Array.from(tagSet)];
   const filtered = activeTag === "All"
     ? projects
     : categorySet.has(activeTag as any)
