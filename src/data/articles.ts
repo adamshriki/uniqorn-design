@@ -62,6 +62,19 @@ export const articles: Article[] = [
     heroImage: "/images/articles/saving-options-hero.webp",
   },
   {
+    slug: "choosing-the-right-ui-component",
+    title:
+      "Choosing the Right UI Component for Communication with Your Users",
+    excerpt:
+      "How to choose the right UI component for the type of message you want to deliver. A friction scale rating UI components from email to push notifications.",
+    readTime: "8 min read",
+    date: "2022-05-15",
+    author: "Adam Shriki",
+    category: "UX Research",
+    thumbnail: "/images/articles/thumb-ui-components.svg",
+    heroImage: "/images/articles/ui-components/hero.png",
+  },
+  {
     slug: "the-high-cost-of-interruption",
     title:
       "The High Cost of Interruption: Re-evaluating the Modal Dialog in Modern UX",
